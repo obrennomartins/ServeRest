@@ -5,103 +5,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  lint:
-
-    runs-on: ubuntu-18.04
-
-    steps:
-    - name: Project checkout
-      uses: actions/checkout@v2
-    - name: Node.js Setup
-      uses: actions/setup-node@v2
-    - name: Installation of Node.js dependencies
-      run: npm ci
-    - name: Lint
-      run: npm run lint
-
-  commit-lint:
-
-    runs-on: ubuntu-18.04
-
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    steps:
-    - name: Project checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - uses: wagoid/commitlint-github-action@v3
-      with:
-        helpURL: https://github.com/ServeRest/ServeRest/blob/trunk/.github/CONTRIBUTING.md
-
-  dockerfile-lint:
-
-    runs-on: ubuntu-18.04
-
-    steps:
-    - name: Project checkout
-      uses: actions/checkout@v2
-    - run: docker run --rm -i hadolint/hadolint < Dockerfile
-
-# será removido em breve, quando hospedagem da página serverest.dev for migrado para outro provedor que utiliza docker
-  test-api-obsolete:
-
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [12.x, 14.x]
-        os: [ubuntu-18.04, ubuntu-20.04, windows-latest]
-
-    steps:
-    - name: Project checkout
-      uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Installation of Node.js dependencies
-      run: npm ci
-    - name: API Test
-      run: npm test
-      env:
-        NODE_ENV: serverest-test
-
-  test-api:
-
-    runs-on: ubuntu-18.04
-
-    steps:
-    - name: Project checkout
-      uses: actions/checkout@v2
-    - run: docker-compose build test
-    - name: Run Integration Test
-      run: make test
-    - uses: actions/upload-artifact@v2
-      with:
-        name: source
-        retention-days: 1
-        path: |
-          ${{ github.workspace }}
-          !.github/**
-          !docs/**
-
-  sonarcloud:
-    needs: test-api
-
-    runs-on: ubuntu-18.04
-
-    steps:
-    - uses: actions/download-artifact@v2
-      with:
-        name: source
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    uses: ServeRest/ServeRest/.github/workflows/reusable_workflow.yml@exemplo-reutilizar-workflow
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   test-mutation-diff:
 
@@ -117,22 +24,6 @@ jobs:
       run: make test-mutation-diff
       env:
         STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
-
-  test-infra-docker:
-
-    runs-on: ubuntu-18.04
-
-    steps:
-    - name: Project checkout
-      uses: actions/checkout@v2
-    - name: Setup Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: '1.16.3' 
-    - name: Install dependencies
-      run: cd test/infra && go mod tidy
-    - name: Run infra test
-      run: cd test/infra && go test -v -timeout 10m
 
   test-contract:
 
