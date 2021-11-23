@@ -28,7 +28,8 @@ app.use(express.urlencoded({ extended: false }))
 app.use(queryParser())
 app.use(timeout())
 app.use(cors())
-app.use(rateLimiter)
+// app.use(rateLimiter)
+app.use(rateLimiter, logger)
 
 app.disable('etag')
 
@@ -51,7 +52,7 @@ if (!ehAmbienteDeTestes) {
   app.use(require('express-status-monitor')({ title: 'ServeRest Status' }))
 }
 
-logger(app)
+// logger(app)
 
 /* istanbul ignore next */
 switch (formaDeExecucao()) {
