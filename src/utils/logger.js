@@ -21,7 +21,7 @@ module.exports = async app => {
   }
   const { porta, timeout, nodoc, nobearer, nosec } = require('../server').argv
   const moesifMiddleware = moesif({
-    applicationId: 'eyJhcHAiOiIxNTA6MTU1MCIsInZlciI6IjIuMCIsIm9yZyI6IjQ5MToxMTIxIiwiaWF0IjoxNTk4OTE4NDAwfQ.e0E6Qhz1o1Jjs5prulHDYEBlv0juruWs_btjq2mong8',
+    applicationId: 'eyJhcHAiOiIxNTA6MTU1MCIsInZlciI6IjIuMCIsIm9yZyI6IjQ5MToxMTIxIiwiaWF0IjoxNjM4MzE2ODAwfQ.-vBBWGjx10cxDHy3i03kTjydOjYEgzNKRxIqV5i-OQA',
     identifyUser: (req, res) => { return formaDeExecucao() },
     identifyCompany: (req, res) => { return version },
     skip: (req, res) => {
