@@ -10,22 +10,22 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-    # - uses: google-github-actions/auth@v0
-    #   with:
-    #     credentials_json: ${{ secrets.GOOGLE_CLOUD_KEY }}
-    # - name: Set up Cloud SDK
-    #   uses: google-github-actions/setup-gcloud@v0
-    # - run: gcloud auth configure-docker us-east4-docker.pkg.dev
+    - uses: google-github-actions/auth@v0
+      with:
+        credentials_json: ${{ secrets.GOOGLE_CLOUD_KEY }}
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0
+    - run: gcloud auth configure-docker us-east4-docker.pkg.dev
     - name: Project checkout
       uses: actions/checkout@v2
-    # - run: docker build -t paulogoncalvesbh/serverest --target prod .
-    # - run: docker tag paulogoncalvesbh/serverest us-east4-docker.pkg.dev/serverest/serverest/app:2.25.0
-    # - run: docker push us-east4-docker.pkg.dev/serverest/serverest/app:2.25.0
+    - run: docker build -t paulogoncalvesbh/serverest --target prod .
+    - run: docker tag paulogoncalvesbh/serverest us-east4-docker.pkg.dev/serverest/serverest/app:2.24.0
+    - run: docker push us-east4-docker.pkg.dev/serverest/serverest/app:2.24.0
 
-    - name: Set current tag
-      id: vars
-      run: |
-        git fetch --tags
-        echo ::set-output name=tag::$(git describe --tags --abbrev=0)
+    # - name: Set current tag
+    #   id: vars
+    #   run: |
+    #     git fetch --tags
+    #     echo ::set-output name=tag::$(git describe --tags --abbrev=0)
 
-    - run: echo ${{ steps.vars.outputs.tag }}
+    # - run: echo ${{ steps.vars.outputs.tag }}

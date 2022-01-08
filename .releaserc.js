@@ -75,6 +75,7 @@ module.exports = {
   branches: [
     // https://github.com/semantic-release/semantic-release/blob/master/docs/usage/workflow-configuration.md#workflow-configuration
     { name: 'trunk', channel: 'latest' },
+    { name: 'push-google-cloud', channel: 'latest' },
     { name: 'beta', channel: 'beta', prerelease: 'beta' }
   ],
   plugins: [
@@ -82,6 +83,7 @@ module.exports = {
       releaseRules: [
         { scope: 'no-release', release: false },
         { scope: 'patch', release: 'patch' },
+        { type: 'ci', release: 'patch' },
         { type: 'docs', scope: 'serverest', release: 'patch' }
       ]
     }],
@@ -90,27 +92,28 @@ module.exports = {
         transform: customTransform
       }
     }],
-    ['@semantic-release/changelog', {
-      changelogTitle: '# Changelog'
-    }],
-    ['@semantic-release/npm', {
-      tarballDir: 'dist'
-    }],
-    ['@semantic-release/git', {
-      message: 'chore(release): ${nextRelease.version} [skip ci]\n\nRelease automatically generated through continuous delivery.'
-    }],
-    ['@semantic-release/github', {
-      assets: 'dist/*.tgz',
-      releasedLabels: [
-        'released on @${nextRelease.channel}',
-        'released on ${nextRelease.gitTag}'
-      ]
-    }],
+    // ['@semantic-release/changelog', {
+    //   changelogTitle: '# Changelog'
+    // }],
+    // ['@semantic-release/npm', {
+    //   tarballDir: 'dist'
+    // }],
+    // ['@semantic-release/git', {
+    //   message: 'chore(release): ${nextRelease.version} [skip ci]\n\nRelease automatically generated through continuous delivery.'
+    // }],
+    // ['@semantic-release/github', {
+    //   assets: 'dist/*.tgz',
+    //   releasedLabels: [
+    //     'released on @${nextRelease.channel}',
+    //     'released on ${nextRelease.gitTag}'
+    //   ]
+    // }],
     ['@semantic-release/exec', {
-      prepareCmd: 'docker build -t paulogoncalvesbh/serverest --target prod .'
+      prepareCmd: 'docker build -t paulogoncalvesbh/serverest --target prod .',
+      publishCmd: 'docker tag paulogoncalvesbh/serverest us-east4-docker.pkg.dev/serverest/serverest/app:${nextRelease.channel} && docker push us-east4-docker.pkg.dev/serverest/serverest/app:${nextRelease.channel}'
     }],
-    ['semantic-release-docker', {
-      name: 'paulogoncalvesbh/serverest'
-    }]
+    // ['semantic-release-docker', {
+    //   name: 'paulogoncalvesbh/serverest'
+    // }]
   ]
 }
