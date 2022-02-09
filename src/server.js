@@ -12,7 +12,7 @@ const { formaDeExecucao, urlDocumentacao } = require('./utils/ambiente')
 const { conf } = require('./utils/conf')
 const getRandomFinancialContributor = require('./utils/getRandomFinancialContributor')
 
-const DEFAULT_PORT = process.env.PORT 
+const DEFAULT_PORT = process.env.PORT
 
 const argv = require('yargs')
   .default({
